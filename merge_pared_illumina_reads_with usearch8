@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# input folder
+input_folder="input_directory"
+
+# output_dir is where you would like the quality filtered data to be written - this folder should not already exits as it will be created by the script
+output_folder="output_directory"
+
+# minimum merge overlap
+overlap="50"
+
+
+echo ""
+echo CREATING DIRECTORIES
+echo ""
+mkdir ${output_folder}
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo MERGING PAIRED READS
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+
+for filename in ${input_folder}/*R1_001.fastq
+	do
+		echo ""
+		echo MERGING
+		echo forward reads are:
+		echo $(basename ${filename})
+		echo reverse reads are:
+echo $(basename ${filename} R1_001.fastq)R2_001.fastq
+		echo""
+		usearch8 -fastq_mergepairs ${filename} -reverse "${input_folder}/$(basename -s R1_001.fastq ${filename})R2_001.fastq" -fastqout "${output_folder}/$(basename "$filename")" -fastq_minovlen ${overlap}
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	done
+
+echo ""
+echo DONE
+echo ""
