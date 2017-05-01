@@ -1,0 +1,22 @@
+#!/bin/bash
+
+input_dir="input_dir"
+
+output_dir="output_dir"
+
+mkdir ${output_dir}
+
+
+for filename in ${input_dir}/.fasta
+	do
+		echo ""
+		echo DEREPLICATING UNIQUE SEQUENCES
+		echo input is: ${filename1}
+		echo ""
+		usearch8 -derep_fulllength ${filename} -fastaout "${derep_dir}/$(basename "$filename" .fasta).fasta" -sizeout
+		echo ""
+		echo DONE
+		echo""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		echo ""	
+	done
