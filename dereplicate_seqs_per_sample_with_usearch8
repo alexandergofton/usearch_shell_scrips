@@ -6,6 +6,7 @@ output_dir="output_dir"
 
 mkdir ${output_dir}
 
+###################################
 
 for filename in ${input_dir}/.fasta
 	do
@@ -20,3 +21,6 @@ for filename in ${input_dir}/.fasta
 		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		echo ""	
 	done
+	
+echo Job complete
+echo Script writen by Alexander W. Gofton 2016
