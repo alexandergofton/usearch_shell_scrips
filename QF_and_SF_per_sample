@@ -1,0 +1,174 @@
+#!/bin/bash
+
+# PLEASE FILL IN THE BELOW DIRECTORY LOCATIONS
+# Note: input_dir must be a existing folder which contains all of
+# your .fastq sequence files that have been merged (paired end sequences), primers and distal bases trimmed,
+# and batch renamed in the usearch format (barcodelabel=samplename;sequence_identifier)
+# All other directories will be created as needed by the script.
+# EACH DIRECTORY VALUE MUST HAVE DOUBLE ("") QUOTATION MARKS AROUND IT AND NO SPACES
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+input_dir="merged_trimmed"
+QF_dir="QF"
+derep_dir="QF_derep"
+singleton_filtered_dir="QF_SF"
+
+# PLEASE FILL IN THE BELOW VARIABLES. BELOW EACH VARIABLE IS A DESCRIPTION WITH PROPER USAGE.
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+error_rate="0.01"
+# the variable error_rate defines the maximum error rate (as a % of sequence length) that will be retained in the dataset. For example with error_rate=0.01 (1%) 100bp reads can have 1bp expected error, and 300bp reads can have 3bp expected error
+
+maxsize="1"
+# the variable max size denotes the maximum replicate cluster size that will be removed from the data. eg maxsize=1 only singletons will be removed, maxsize=2 singletons and duplicates will be removed
+
+######################################################################################################################
+# START OF SCRIPT, EDITING BELOW THIS LINE MAY CAUSE ERRORS IN YOUR ANALYSIS
+
+
+		echo ""
+		echo CREATING DIRECTORIES
+		echo ""
+		echo @@@@@@@@@@@@@@@@@@@@@@@
+		echo 1. Creating directories
+		echo @@@@@@@@@@@@@@@@@@@@@@@
+		echo ""
+
+mkdir ${QF_dir}
+mkdir ${derep_dir}
+mkdir ${singleton_filtered_dir}
+mkdir working_files1
+mkdir working_files2
+mkdir working_files3
+
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		echo ""
+		echo @@@@@@@@@@@@@@@@@@
+		echo 2. Quality control
+		echo @@@@@@@@@@@@@@@@@@
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+for filename in ${input_dir}/*.fastq
+do
+		echo ""
+		echo QUALITY CONTROL
+		echo input is: ${filename}
+		echo max error_rate is: ${error_rate}
+		echo""
+usearch8 -fastq_filter ${filename} -fastaout "${QF_dir}/$(basename "$filename" .fastq).fasta" -fastq_maxee_rate ${error_rate}
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+done
+
+		echo ""
+		echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		echo 3. FINDING SINGLETON SEQUENCES PER SAMPLE
+		echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+#Step 1 - dereplicating sequences per sample
+	 
+for filename1 in ${QF_dir}/*.fasta
+do
+		echo ""
+		echo Step 1 - dereplicating sequences per sample
+		echo input is: ${filename1}
+		echo ""
+usearch8 -derep_fulllength ${filename1} -fastaout "${derep_dir}/$(basename "$filename1" .fasta).fasta" -sizeout
+		echo ""
+		echo DONE
+		echo""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+done
+	
+#Step2 - Excluding sequences with > 1 replicate copy
+
+for filename2 in ${derep_dir}/*.fasta
+do
+		echo ""
+ 		echo Step2 - Excluding sequences with > 1 replicate copy
+		echo input is: ${filename2}
+		echo maximum replicate cluster_size discarded is ${maxsize} 
+		echo ""
+usearch8 -sortbysize ${filename2} -fastaout "working_files1/$(basename "$filename2" .fasta).fasta" -maxsize ${maxsize}
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+done
+	
+#Step3 - Extracting names of singletons sequences
+
+for filename3 in working_files1/*.fasta
+do
+		echo ""
+		echo Step3 - Extracting names of singletons sequences
+		echo input is: ${filename3}
+		echo ""
+grep "^>" ${filename3} > "working_files2/$(basename "$filename3" .fasta).txt"
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		done
+
+#Step4 - Formatting singleton sequence names for removal algorithm
+
+for filename4 in working_files2/*.txt
+do
+		echo ""
+		echo Step4 - Formatting singleton sequence names for removal algorithm
+		echo input is: ${filename4}
+		echo ""
+sed -e 's/;size=1;//g' -e 's/>//g' ${filename4} > "working_files3/$(basename "$filename4" .txt).txt"
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+done
+
+		echo ""
+		echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		echo 4. Removing singletons per sample
+		echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+for filename5 in ${QF_dir}/*.fasta
+do
+		echo ""
+		echo REMOVAL OF SINGLETONS STEP 5: REMOVING SINGLETONS FROM QF DATAFILES
+		echo input is: ${filename5}
+		echo ""
+usearch8 -fastx_getseqs	${filename5} -labels "working_files3/$(basename "$filename5" .fasta).txt" -notmatched "${singleton_filtered_dir}/$(basename "$filename5" .fasta).fasta"
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+done
+
+for filename6 in ${singleton_filtered_dir}/*.fasta
+do
+	echo ""
+	echo Dereplicating per sampl e fo r BLAST	
+	echo input is: ${filename6}
+	echo ""
+usearch8 -derep_fulllength ${filename6} -fastaout "${final_derep_dir}/$(basename "$filename6" .fasta).fasta" -sizeout
+done 
+
+		echo ""
+		echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		echo 5. Concatenating all SF data files for BLAST
+		echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		echo ""
+		
+cat ${singleton_filtered_dir}/*.fasta > ${singleton_filtered_dir}/All_samples.fasta
+	
+
+echo ""
+echo Job complete
+echo Script writen by Alexander W. Gofton 2016
