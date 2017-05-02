@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# input_folder should already exist and contain all the sequence files in .fastq format.
+input_folder="some_directory"
+
+# output_dir is where you would like the quality filtered data to be written - this folder should not already exits as it will be created by the script
+output_folder="QF_directory"
+
+# the variable error_rate defines the maximum error rate (as a % of sequence length) that will be retained in the dataset. For example with error_rate=0.01 (1%) 100bp reads can have 1bp expected error, and 300bp reads can have 3bp expected error
+error_rate="0.01"
+
+
+############################
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+mkdir ${output_folder}
+echo ""
+
+for filename in ${input_folder}/*.fastq
+	do
+		echo ""
+		echo QUALITY CONTROL
+		echo input is:
+		echo ${filename}
+		echo""
+		usearch8 -fastq_filter ${filename} -fastaout "${output_folder}/$(basename "$filename" .fastq).fasta" -fastq_maxee_rate ${error_rate}
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	done
+
+echo ""
+echo DONE
+echo ""
+
+echo Job complete
+echo Script writen by Alexander W. Gofton 2016
