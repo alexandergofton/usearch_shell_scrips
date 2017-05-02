@@ -1,0 +1,233 @@
+#!/bin/bash
+
+	
+input_dir="trimmed_seqs"
+
+QF_dir="QF"
+
+derep_dir="QF_derep"
+
+singleton_filtered_dir="QF_derep_SF"
+
+OTUs_dir="OTUs"
+
+# the variable error_rate defines the maximum error rate (as a % of sequence length) that will be retained in the dataset. For example with error_rate=0.01 (1%) 100bp reads can have 1bp expected error, and 300bp reads can have 3bp expected error
+error_rate="0.01"
+
+# the variable max size denotes the maximum replicate cluster size that will be removed from the data. eg maxsize=1 only singletons will be removed, maxsize=2 singletons and duplicates will be removed
+maxsize="1"
+
+##################################
+
+echo ""
+echo CREATING DIRECTORIES
+echo ""
+
+mkdir ${QF_dir}
+mkdir ${derep_dir}
+mkdir ${singleton_filtered_dir}
+mkdir ${OTUs_dir}
+mkdir working_files1
+mkdir working_files2
+mkdir working_files3
+
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo QUALITY CONTROL MAX 1% ERROR RATE
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
+for filename in ${input_dir}/*.fastq
+	do
+		echo ""
+		echo QUALITY CONTROL
+		echo input is:
+		echo ${filename}
+		echo""
+		usearch8 -fastq_filter ${filename} -fastaout "${QF_dir}/$(basename "$filename" .fastq).fasta" -fastq_maxee_rate ${error_rate}
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	done
+
+echo ""
+echo @@@@@@@@@@@@@@@@@@@@@
+echo REMOVAL OF SINGLETONS
+echo @@@@@@@@@@@@@@@@@@@@@
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#Step 1
+
+for filename1 in ${QF_dir}/*.fasta
+	do
+		echo ""
+		echo REMOVAL OF SINGLETONS STEP 1: DEREPLICATION
+		echo input is:
+		echo ${filename1}
+		echo ""
+		usearch8 -derep_fulllength ${filename1} -fastaout "${derep_dir}/$(basename "$filename1" .fasta).fasta" -sizeout
+		echo ""
+		echo DONE
+		echo""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	done
+	
+#Step2
+
+for filename2 in ${derep_dir}/*.fasta
+	do
+		echo ""
+		echo REMOVAL OF SINGLETONS STEP 2: REPLICATE CLUSTER SIZE SORTING
+		echo input is:
+		echo ${filename2}
+		echo ""
+		usearch8 -sortbysize ${filename2} -fastaout "working_files1/$(basename "$filename2" .fasta).fasta" -maxsize ${maxsize}
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	done
+	
+#Step3
+
+for filename3 in working_files1/*.fasta
+	do
+		echo ""
+		echo REMOVAL OF SINGLETONS STEP 3: OBTAINING SINGLETON SEQUENCE NAMES
+		echo input is:
+		echo ${filename3}
+		echo ""
+			grep "^>" ${filename3} > "working_files2/$(basename "$filename3" .fasta).txt"
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	done
+
+#Step4
+
+for filename4 in working_files2/*.txt
+	do
+		echo ""
+		echo REMOVAL OF SINGLETONS STEP 4: FORMATTING SEQUENCE NAMES TO REMOVE
+		echo input is:
+		echo ${filename4}
+		echo ""
+		sed -e 's/;size=1;//g' -e 's/>//g' ${filename4} > "working_files3/$(basename "$filename4" .txt).txt"
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	done
+
+#Step5 Removing singleton sequences from data
+
+
+for filename5 in ${QF_dir}/*.fasta
+	do
+		echo ""
+		echo REMOVAL OF SINGLETONS STEP 5: REMOVING SINGLETONS FROM QF DATAFILES
+		echo input is:
+		echo ${filename5}
+		echo ""
+		usearch8 -fastx_getseqs	${filename5} -labels "working_files3/$(basename "$filename5" .fasta).txt" -notmatched "${singleton_filtered_dir}/$(basename "$filename5" .fasta).fasta"
+		echo ""
+		echo DONE
+		echo ""
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	done
+	
+rm -r working_files1
+rm -r working_files2
+rm -r working_files3
+
+echo ""
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo OTU CLUSTERING AND CHIMERA DETECTION
+echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+echo ""
+echo CONCATENATING FILES TOGETHER
+echo""
+
+	cat ${singleton_filtered_dir}/*.fasta > ${OTUs_dir}/all_samples_QF_no_singletons.fasta
+
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo DEREPLICATING UNIQUE SEQUENCES
+echo""
+
+	usearch8 -derep_fulllength ${OTUs_dir}/all_samples_QF_no_singletons.fasta -fastaout ${OTUs_dir}/derep.fasta -sizeout
+
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo SORTHING REPLICATE CLUSTERS
+echo""
+
+	usearch8 -sortbysize ${OTUs_dir}/derep.fasta -fastaout ${OTUs_dir}/derep_sortbysize.fasta -minsize 2
+
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo CLUSTERING OTUs
+echo""
+
+	usearch8 -cluster_otus ${OTUs_dir}/derep_sortbysize.fasta -otus ${OTUs_dir}/otu_rep_seqs.fasta -uc ${OTUs_dir}/otu_clustering_uc_map.txt
+
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo DETECTING AND FILTERING CHIMERAS
+echo""
+
+	usearch8 -uchime_ref ${OTUs_dir}/otu_rep_seqs.fasta -db drive5/gold.fa -strand plus -nonchimeras ${OTUs_dir}/otu_rep_seqs_chimeras_filtered.fasta
+
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo NUMBERING OTUs
+echo""
+
+	python drive5/fasta_number.py ${OTUs_dir}/otu_rep_seqs_chimeras_filtered.fasta OTU_ > ${OTUs_dir}/final_otus.fasta
+
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo CREATING UCLUST OTU MAP
+echo""
+
+	usearch8 -usearch_global ${OTUs_dir}/all_samples_QF_no_singletons.fasta -db ${OTUs_dir}/final_otus.fasta -strand plus -id 0.97 -uc ${OTUs_dir}/final_otus_uc_map.txt
+
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo CREATING OTU TABLE
+echo""
+
+	python drive5/uc2otutab.py ${OTUs_dir}/final_otus_uc_map.txt > ${OTUs_dir}/otu_table.txt
+
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+echo DONE
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+echo Job complete
+echo Script written by Alexander W. Gofton 2016
+					
+ 	
