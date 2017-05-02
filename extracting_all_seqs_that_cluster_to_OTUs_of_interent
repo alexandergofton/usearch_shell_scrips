@@ -1,0 +1,361 @@
+#!/bin/bash
+
+final_OTUs_uc_map_dir="final_otus_uc_map.txt"
+
+seqs_file_dir="all_samples_QF_no_singletons.fasta"
+
+output_dir="output_dir"
+
+###################################################
+
+OTU_a="OTU_"
+OTU_a_tax=""
+
+OTU_b="OTU_"
+OTU_b_tax=""
+
+OTU_c="OTU_"
+OTU_c_tax=""
+
+OTU_d="OTU_"
+OTU_d_tax=""
+
+OTU_e="OTU_"
+OTU_e_tax=""
+
+OTU_f="OTU_"
+OTU_f_tax=""
+
+OTU_g="OTU_"
+OTU_g_tax=""
+
+OTU_h="OTU_"
+OTU_h_tax=""
+
+OTU_i="OTU_"
+OTU_i_tax=""
+
+OTU_j="OTU_"
+OTU_j_tax=""
+
+OTU_k="OTU_"
+OTU_k_tax=""
+
+OTU_l="OTU_"
+OTU_l_tax=""
+
+OTU_m="OTU_"
+OTU_m_tax=""
+
+OTU_n="OTU_"
+OTU_n_tax=""
+
+OTU_o="OTU_"
+OTU_o_tax=""
+
+OTU_p="OTU_"
+OTU_p_tax=""
+
+OTU_q="OTU_"
+OTU_q_tax=""
+
+OTU_r="OTU_"
+OTU_r_tax=""
+
+OTU_s="OTU_"
+OTU_s_tax=""
+
+OTU_t="OTU_"
+OTU_t_tax=""
+
+OTU_u="OTU_"
+OTU_u_tax=""
+
+OTU_v="OTU_"
+OTU_v_tax=""
+
+OTU_w="OTU_"
+OTU_w_tax=""
+
+OTU_x="OTU_"
+OTU_x_tax=""
+
+OTU_y="OTU_"
+OTU_y_tax=""
+
+OTU_z="OTU_"
+OTU_z_tax=""
+
+################################
+
+mkdir working_files1
+mkdir working_files2
+mkdir working_files3
+mkdir working_files4
+mkdir ${output_dir}
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_a}_${OTU_a_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_a}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_a}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_a}.txt" > "working_files2/${OTU_a}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_a}.txt" > "working_files3/${OTU_a}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_a}.txt" > "working_files4/${OTU_a}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_a}.txt" -fastaout "${output_dir}/${OTU_a}_${OTU_a_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_b}_${OTU_b_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_b}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_b}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_b}.txt" > "working_files2/${OTU_b}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_b}.txt" > "working_files3/${OTU_b}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_b}.txt" > "working_files4/${OTU_b}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_b}.txt" -fastaout "${output_dir}/${OTU_b}_${OTU_b_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_c}_${OTU_c_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_c}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_c}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_c}.txt" > "working_files2/${OTU_c}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_c}.txt" > "working_files3/${OTU_c}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_c}.txt" > "working_files4/${OTU_c}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_c}.txt" -fastaout "${output_dir}/${OTU_c}_${OTU_c_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_d}_${OTU_d_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_d}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_d}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_d}.txt" > "working_files2/${OTU_d}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_d}.txt" > "working_files3/${OTU_d}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_d}.txt" > "working_files4/${OTU_d}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_d}.txt" -fastaout "${output_dir}/${OTU_d}_${OTU_d_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_e}_${OTU_e_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_e}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_e}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_e}.txt" > "working_files2/${OTU_e}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_e}.txt" > "working_files3/${OTU_e}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_e}.txt" > "working_files4/${OTU_e}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_e}.txt" -fastaout "${output_dir}/${OTU_e}_${OTU_e_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_f}_${OTU_f_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_f}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_f}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_f}.txt" > "working_files2/${OTU_f}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_f}.txt" > "working_files3/${OTU_f}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_f}.txt" > "working_files4/${OTU_f}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_f}.txt" -fastaout "${output_dir}/${OTU_f}_${OTU_f_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_g}_${OTU_g_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_g}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_g}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_g}.txt" > "working_files2/${OTU_g}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_g}.txt" > "working_files3/${OTU_g}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_g}.txt" > "working_files4/${OTU_g}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_g}.txt" -fastaout "${output_dir}/${OTU_g}_${OTU_g_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_h}_${OTU_h_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_h}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_h}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_h}.txt" > "working_files2/${OTU_h}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_h}.txt" > "working_files3/${OTU_h}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_h}.txt" > "working_files4/${OTU_h}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_h}.txt" -fastaout "${output_dir}/${OTU_h}_${OTU_h_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_i}_${OTU_i_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_i}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_i}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_i}.txt" > "working_files2/${OTU_i}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_i}.txt" > "working_files3/${OTU_i}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_i}.txt" > "working_files4/${OTU_i}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_i}.txt" -fastaout "${output_dir}/${OTU_i}_${OTU_i_tax}".fasta
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_j}_${OTU_j_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_j}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_j}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_j}.txt" > "working_files2/${OTU_j}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_j}.txt" > "working_files3/${OTU_j}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_j}.txt" > "working_files4/${OTU_j}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_j}.txt" -fastaout "${output_dir}/${OTU_j}_${OTU_j_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_k}_${OTU_k_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_k}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_k}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_k}.txt" > "working_files2/${OTU_k}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_k}.txt" > "working_files3/${OTU_k}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_k}.txt" > "working_files4/${OTU_k}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_k}.txt" -fastaout "${output_dir}/${OTU_k}_${OTU_k_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_l}_${OTU_l_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_l}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_l}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_l}.txt" > "working_files2/${OTU_l}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_l}.txt" > "working_files3/${OTU_l}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_l}.txt" > "working_files4/${OTU_l}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_l}.txt" -fastaout "${output_dir}/${OTU_l}_${OTU_l_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_m}_${OTU_m_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_m}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_m}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_m}.txt" > "working_files2/${OTU_m}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_m}.txt" > "working_files3/${OTU_m}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_m}.txt" > "working_files4/${OTU_m}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_m}.txt" -fastaout "${output_dir}/${OTU_m}_${OTU_m_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_n}_${OTU_n_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_n}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_n}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_n}.txt" > "working_files2/${OTU_n}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_n}.txt" > "working_files3/${OTU_n}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_n}.txt" > "working_files4/${OTU_n}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_n}.txt" -fastaout "${output_dir}/${OTU_n}_${OTU_n_tax}".fasta
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_o}_${OTU_o_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_o}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_o}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_o}.txt" > "working_files2/${OTU_o}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_o}.txt" > "working_files3/${OTU_o}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_o}.txt" > "working_files4/${OTU_o}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_o}.txt" -fastaout "${output_dir}/${OTU_o}_${OTU_o_tax}".fasta
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_p}_${OTU_p_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_p}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_p}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_p}.txt" > "working_files2/${OTU_p}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_p}.txt" > "working_files3/${OTU_p}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_p}.txt" > "working_files4/${OTU_p}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_p}.txt" -fastaout "${output_dir}/${OTU_p}_${OTU_p_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_q}_${OTU_q_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_q}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_q}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_q}.txt" > "working_files2/${OTU_q}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_q}.txt" > "working_files3/${OTU_q}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_q}.txt" > "working_files4/${OTU_q}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_q}.txt" -fastaout "${output_dir}/${OTU_q}_${OTU_q_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_r}_${OTU_r_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_r}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_r}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_r}.txt" > "working_files2/${OTU_r}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_r}.txt" > "working_files3/${OTU_r}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_r}.txt" > "working_files4/${OTU_r}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_r}.txt" -fastaout "${output_dir}/${OTU_r}_${OTU_r_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_s}_${OTU_s_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_s}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_s}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_s}.txt" > "working_files2/${OTU_s}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_s}.txt" > "working_files3/${OTU_s}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_s}.txt" > "working_files4/${OTU_s}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_s}.txt" -fastaout "${output_dir}/${OTU_s}_${OTU_s_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_t}_${OTU_t_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_t}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_t}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_t}.txt" > "working_files2/${OTU_t}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_t}.txt" > "working_files3/${OTU_t}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_t}.txt" > "working_files4/${OTU_t}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_t}.txt" -fastaout "${output_dir}/${OTU_t}_${OTU_t_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_u}_${OTU_u_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_u}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_u}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_u}.txt" > "working_files2/${OTU_u}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_u}.txt" > "working_files3/${OTU_u}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_u}.txt" > "working_files4/${OTU_u}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_u}.txt" -fastaout "${output_dir}/${OTU_u}_${OTU_u_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_v}_${OTU_v_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_v}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_v}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_v}.txt" > "working_files2/${OTU_v}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_v}.txt" > "working_files3/${OTU_v}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_v}.txt" > "working_files4/${OTU_v}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_v}.txt" -fastaout "${output_dir}/${OTU_v}_${OTU_v_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_w}_${OTU_w_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_w}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_w}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_w}.txt" > "working_files2/${OTU_w}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_w}.txt" > "working_files3/${OTU_w}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_w}.txt" > "working_files4/${OTU_w}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_w}.txt" -fastaout "${output_dir}/${OTU_w}_${OTU_w_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_x}_${OTU_x_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_x}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_x}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_x}.txt" > "working_files2/${OTU_x}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_x}.txt" > "working_files3/${OTU_x}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_x}.txt" > "working_files4/${OTU_x}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_x}.txt" -fastaout "${output_dir}/${OTU_x}_${OTU_x_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_y}_${OTU_y_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_y}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_y}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_y}.txt" > "working_files2/${OTU_y}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_y}.txt" > "working_files3/${OTU_y}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_y}.txt" > "working_files4/${OTU_y}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_y}.txt" -fastaout "${output_dir}/${OTU_y}_${OTU_y_tax}".fasta
+echo ""
+
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "${OTU_z}_${OTU_z_tax}"
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grep ${OTU_z}"$" ${final_OTUs_uc_map_dir} > "working_files1/${OTU_z}.txt" 
+sed -n -e 's/.*barcodelabel//;s/OTU.*//p' "working_files1/${OTU_z}.txt" > "working_files2/${OTU_z}.txt"
+sed -E "s/[[:space:]]$//" "working_files2/${OTU_z}.txt" > "working_files3/${OTU_z}.txt"
+sed "s/^/barcodelabel/" "working_files3/${OTU_z}.txt" > "working_files4/${OTU_z}.txt"
+usearch8 -fastx_getseqs ${seqs_file_dir} -labels "working_files4/${OTU_z}.txt" -fastaout "${output_dir}/${OTU_z}_${OTU_z_tax}".fasta
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rm -r working_files1
+rm -r working_files2
+rm -r working_files3
+rm -r working_files4
+
+
+echo Job complete
+echo Script writen by Alexander W. Gofton 2016
