@@ -43,3 +43,6 @@ echo $(basename ${filename} R1_001.fastq)R2_001.fastq
 echo ""
 echo DONE
 echo ""
+
+echo Job complete
+echo Script writen by Alexander W. Gofton 2016
