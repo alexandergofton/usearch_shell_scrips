@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# For this script to run correctly input fastq label must be formatted @sequence_id and @sequence_id, and filename must be sample_id.fastq.
+
+input_fastq="input"
+ouput_labeled_fastq="output"
+
+mkdir ${ouput_labeled_fastq}
+mkdir working1
+mkdir working2
+
+#####################################################
+# 1 Remove "@" from start of sequence_ID for sequence
+#####################################################
+
+for file1 in input/*.fastq
+	do
+sed -e 's/@/@barcodelabel=;/g' ${file1} > working1/$(basename "$file1" .fastq).txt 
+	done
+
+#####################################################
+# 2 Remove "+" from start of sequence_ID for quality
+#####################################################
+
+for file2 in working1/*.txt
+	do
+sed -e 's/+/+barcodelabel=;/g' ${file2} > working2/$(basename "$file2") 
+	done
+
+#######################################################################################
+# 3 Add sample_ID (should be filename) to produce "@/+barcodelabel=sample_ID;sequence_ID"
+#######################################################################################
+
+for file3 in working2/*.txt 
+	do
+sample_id=$(basename ${file3} .txt)
+sed -e "s/;/${sample_id};/g" ${file3} > output/$(basename "$file3" .txt).fastq
+	done
+
+rm -r working1
+rm -r working2
+
+echo Complete
+echo Script written by Alexander W. Gofton, 2017
+	
