@@ -30,5 +30,6 @@ sed -e "s/;/${sample_id};/g" ${file2} > output/$(basename "$file2" .txt).fasta
   
 rm -r working1
 
+echo Complete
 echo Script written by Alexander W. Gofton, 2017
 	
