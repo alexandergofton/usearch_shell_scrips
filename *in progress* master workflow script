@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# This is a master workflow that will perform:
+#	1) Merging of illumina paired reads
+#	2) Trimming of primer sequences and distal bases and removal of sequences without 100% correct primer sequences
+#	3) Renaming files with USEARCH labels "barcodelabel=sample_id;sequence_id"
+#	4) Quality filtering of sequence data
+#	5)
+#
+
+##########################################################################################
+#	Input raw unmerged filenames must be "sample_id_SXXX_L001_R1_001.fastq" and "sample_id_SXXX_L001_R2_001.fastq" 
+#	and all deposited in a directory specified by the $"raw_data" variable. "SXXX" is the sample number given by the sequencer
+#	in the order you entered them in the Sample Sheet.
+
+# Enter raw data directorry
+raw_data=${raw_data}
+
+# Enter merged output directory
+merged_data=${merged_data}
+
+
+# Enter minimum merge overlap - 50 bp minimum
+overlap="50"
+
+
+mkdir ${merged_data}
+mkdir working1
+
+
+echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+echo Merging paried illumina sequences
+echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+echo ""
+echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo ""
+
+for file1 in ${raw_data}/*R1_001.fastq
+	do
+	
+		echo forward reads are:
+		echo $(basename ${file1})
+		echo reverse reads are:
+		echo $(basename ${file1} R1_001.fastq)R2_001.fastq
+usearch8 -fastq_mergepairs ${file1} -reverse "${raw_data}/$(basename -s R1_001.fastq ${file1})R2_001.fastq" -fastqout "${working1}/$(basename "$file1")" -fastq_minovlen ${overlap}
+	
+	done
+
+for file2 in working1/*.fastq
+	do
+
+rename="$(basename ${file2} _L001_R1_001.fastq).fastq"
+mv ${file2} ${merged_data}/${rename}
+
+	done
+	
+		echo Complete
+		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	
+
+echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+echo Triming primers and distal bases
+echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+	
+	
+	
+	
+	
+	
+	
+	
+
+echo Job complete
+echo Script writen by Alexander W. Gofton 2016
