@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This is a master workflow that will perform:
+# 	This is a master workflow that will perform:
 #	1) Merging of illumina paired reads
 #	2) Trimming of primer sequences and distal bases and removal of sequences without 100% correct primer sequences
 #	3) Renaming files with USEARCH labels "barcodelabel=sample_id;sequence_id"
@@ -14,59 +14,89 @@
 #	in the order you entered them in the Sample Sheet.
 
 # Enter raw data directorry
-raw_data=${raw_data}
+raw_data="raw_data"
 
 # Enter merged output directory
-merged_data=${merged_data}
-
+merged_data="merged_data"
 
 # Enter minimum merge overlap - 50 bp minimum
 overlap="50"
 
+# Enter FWD primer sequence 5'-3'
+fwd_primer="ACTG"
+
+# Enter REV primer sequence 5'-3'
+rev_primer="CTGA
+
+# Enter number of primer missmatches allowed
+pcr_missmatches="0"
 
 mkdir ${merged_data}
 mkdir working1
 
 
-echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-echo Merging paried illumina sequences
-echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-echo ""
-echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-echo ""
+	echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	echo Merging paried illumina sequences
+	echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	echo ""
+	echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	echo ""
 
 for file1 in ${raw_data}/*R1_001.fastq
-	do
-	
+do
 		echo forward reads are:
 		echo $(basename ${file1})
 		echo reverse reads are:
 		echo $(basename ${file1} R1_001.fastq)R2_001.fastq
 usearch8 -fastq_mergepairs ${file1} -reverse "${raw_data}/$(basename -s R1_001.fastq ${file1})R2_001.fastq" -fastqout "${working1}/$(basename "$file1")" -fastq_minovlen ${overlap}
-	
-	done
+done
 
 for file2 in working1/*.fastq
-	do
-
+do
 rename="$(basename ${file2} _L001_R1_001.fastq).fastq"
 mv ${file2} ${merged_data}/${rename}
+done
+	
+	echo Complete
+	echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	
 
-	done
+	echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	echo Triming primers and distal bases
+	echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 	
-		echo Complete
-		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	
+# currently this matches seqs with primers but does not trim them.
 
-echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-echo Triming primers and distal bases
-echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+mkdir seqs_w_fwd_primer
+mkdir seqs_wo_fwd_primer
+mkdir seqs_w_fwd_&_rev_primer
+mkdir seqs_w_fwd_butnot_rev_primer
+
+echo ">fwd_primer" > fwd_primer_db.fasta
+echo ${fwd_primer} >> fwd_primer_db.fasta
+
+echo ">rev_primer" > rev_primer_db.fasta
+echo ${rev_primer} >> rev_primer_db.fasta
+
+echo ">fwd_primer" > both_primers_db.fasta
+echo ${fwd_primer} >> both_primers_db.fasta
+echo ">rev_primer" >> both_primers_db.fasta
+echo ${rev_primer} >> both_primers_db.fasta
+
+for file3 in ${merged_data}/*.fastq
+do
+usearch8 -search_oligodb ${file3} -db fwd_primer_db.fasta -strand both -matchedfq seqs_w_fwd_primer/${file3} -notmatchedfq seqs_wo_fwd_primer/${file3} 	
+done
+
+for file4 in seqs_w_fwd_primer/*.fastq
+do
+usearch8 -search_oligpdb ${file4} -db rev_primer_db.fasta -strand both -matchedfq seqs_w_fwd_&_rev_primer/${file4} -notmatchedfq seqs_w_fwd_butnot_rev_primer/${file4}
+done
 	
-	
-	
-	
-	
-	
+#for file5 in seqs_w_fwd_&_rev_primer/*.fastq
+#do
+#usearch8 -search_pcr ${file5} -db both_primers_db.fasta -strand both -maxdiffs ${pcr_missmatched} -pcr_strip_primers -ampout trimmed_data/${file5}
+#done
 	
 	
 
