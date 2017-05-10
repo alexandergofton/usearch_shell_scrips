@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# this script is untested and OTU clusting is out of date - there are several dependencies not yet listed!!!!!!!!!!
-
 
 # 	This is a master workflow that will perform:
 #	1) Merging of illumina paired reads
@@ -17,6 +15,11 @@
 #	Input raw unmerged filenames must be "sample_id_SXXX_L001_R1_001.fastq" and "sample_id_SXXX_L001_R2_001.fastq" 
 #	and all deposited in a directory specified by the $"raw_data" variable. "SXXX" is the sample number given by the sequencer
 #	in the order you entered them in the Sample Sheet.
+#
+#	Two python scripts and a ref db are also needed to complete this workflow. These should be in the directory you are  launching this shell from.
+#	1) uc2otutab.py 
+#	2) fasta_number.py
+#	3) gold.fa
 ##########################################################################################
 
 # Enter raw data directorry
@@ -35,19 +38,19 @@ QF="QF"
 error_rate="0.01"
 
 # Enter directory for trimmed data
-trimmed_data="trimmed_data"
+trimmed_data="QF_trimmed"
 
 # Enter FWD primer sequence 5'-3'
-fwd_primer="TCCGCTGTATTCTCAGCC"
+fwd_primer="AGTGACAAGAAATAACAATACAGG"
 
 # Enter REV primer sequence 5'-3'
-rev_primer="CGAACCACATTACAAATGAAGT"
+rev_primer="CCTGCTTTAAGCACTCTAATTTTC"
 
 # Enter number of primer missmatches allowed
 pcr_missmatches="0"
 
 # Enter directory for labeled data
-labeled_data="barcodelabel_data"
+labeled_data="QF_trimmed_labeled"
 
 # Enter directory for derep data
 derep_dir="derep_dir"
@@ -89,7 +92,7 @@ rename="$(basename ${file2} _L001_R1_001.fastq).fastq"
 mv ${file2} ${merged_data}/${rename}
 done
 
-#rm -r working1
+rm -r working1
 
 		echo Complete
 	
@@ -105,8 +108,8 @@ for file3 in ${merged_data}/*.fastq
 do
 		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		echo ""
-		echo Quality control with error rate threshold @ ${error_rate) %
-		echo input is: ${filename}
+		echo Quality control
+		echo ${file3}
 		echo ""
 usearch8 -fastq_filter ${file3} -fastaout "${QF}/$(basename "$file3" .fastq).fasta" -fastq_maxee_rate ${error_rate}
 		echo ""
@@ -119,9 +122,10 @@ done
 	
 # This step can take .fastq input but can only output .fasta - so must be done after QF.
 
+mkdir ${trimmed_data}
 mkdir seqs_w_fwd_primer
 mkdir seqs_wo_fwd_primer
-mkdir seqs_w_fwd_&_rev_primer
+mkdir seqs_w_fwd_and_rev_primer
 mkdir seqs_w_fwd_butnot_rev_primer
 
 echo ">fwd_primer" > fwd_primer_db.fasta
@@ -137,27 +141,31 @@ echo ${rev_primer} >> both_primers_db.fasta
 
 for file4 in ${QF}/*.fasta
 do
-usearch8 -search_oligodb ${file4} -db fwd_primer_db.fasta -strand both -matchedfq "seqs_w_fwd_primer/$(basename ${file4}) -notmatchedfq "seqs_wo_fwd_primer/$(basename ${file4})" 	
+echo ${file4}
+usearch8 -search_oligodb ${file4} -db fwd_primer_db.fasta -strand both -matched "seqs_w_fwd_primer/$(basename ${file4})" -notmatched "seqs_wo_fwd_primer/$(basename ${file4})" 	
 done
 
-for file4 in seqs_w_fwd_primer/*.fasta
+for file5 in seqs_w_fwd_primer/*.fasta
 do
-usearch8 -search_oligpdb ${file5} -db rev_primer_db.fasta -strand both -matchedfq "seqs_w_fwd_&_rev_primer/$(basename ${file5}) -notmatchedfq "seqs_w_fwd_butnot_rev_primer/$(basename ${file5})"
+echo ${file5}
+usearch8 -search_oligodb ${file5} -db rev_primer_db.fasta -strand both -matched "seqs_w_fwd_and_rev_primer/$(basename ${file5})" -notmatched "seqs_w_fwd_butnot_rev_primer/$(basename ${file5})"
 done
 	
-for file5 in seqs_w_fwd_&_rev_primer/*.fasta
+for file6 in seqs_w_fwd_and_rev_primer/*.fasta
 do
-usearch8 -search_pcr ${file6} -db both_primers_db.fasta -strand both -maxdiffs ${pcr_missmatched} -pcr_strip_primers -ampout "${trimmed_data}/$(basename ${file6} .fasta).fasta"
+echo ${file6}
+usearch8 -search_pcr ${file6} -db both_primers_db.fasta -strand both -maxdiffs ${pcr_missmatches} -pcr_strip_primers -ampout "${trimmed_data}/$(basename ${file6} .fasta).fasta"
 done
 
-#rm -r seqs_w_fwd_primer
-#rm -r seqs_wo_fwd_primer
-#rm -r seqs_w_fwd_&_rev_primer
-#rm -r seqs_w_fwd_butnot_rev_primer
+rm -r seqs_w_fwd_primer
+rm -r seqs_wo_fwd_primer
+rm -r seqs_w_fwd_and_rev_primer
+rm -r seqs_w_fwd_butnot_rev_primer
 
 
 # For this script to run correctly input fasta label must be formatted >sequence_id, and filename must be sample_id.fasta.
 # Result will be ">barcodelabel=sample_id;sequenceid"
+
 		echo ""
 		echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		echo Renameing sequences with ">barcodelabel=sample_id;sequence_id"
@@ -183,7 +191,7 @@ echo ${sample_id}
 sed -e "s/;/${sample_id};/g" ${file8} > "${labeled_data}/$(basename "$file8" .txt).fasta"
 done
   
-#rm -r working2
+rm -r working2
 
 		echo ""
 		echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -192,6 +200,7 @@ done
 		echo ""
 		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+mkdir ${derep_dir}
 mkdir ${SF}
 mkdir working3
 mkdir working4
@@ -231,7 +240,7 @@ done
 for file11 in working3/*.fasta
 do
 		echo ""
-		echo Reming singletons step 3: ontaining singleton sequence names
+		echo Removing singletons step 3: ontaining singleton sequence names
 		echo input is:
 		echo ${file11}
 		
@@ -241,12 +250,14 @@ grep "^>" ${file11} > "working4/$(basename "$file11" .fasta).txt"
 		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 done
 
+rm working4/'*.txt'
+
 #Step4
 
 for file12 in working4/*.txt
 do
 		echo ""
-		echo REMOVAL OF SINGLETONS STEP 4: FORMATTING SEQUENCE NAMES TO REMOVE
+		echo Removing singletons step 4: formatting singleton seq names 
 		echo input is:
 		echo ${file12}
 		echo ""
@@ -256,25 +267,27 @@ sed -e 's/;size=1;//g' -e 's/>//g' ${file12} > "working5/$(basename "$file12" .t
 		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 done
 
+rm working5/'*.txt'
+
 #Step5 Removing singleton sequences from data
 
 
-for file13 in ${QF}/*.fasta
+for file13 in ${labeled_data}/*.fasta
 	do
 		echo ""
-		echo Removing singletons step 5: removing singletons seqs from QF datafile
+		echo Removing singletons step 5: removing singletons seqs 
 		echo input is:
 		echo ${file13}
 		echo ""
-		usearch8 -fastx_getseqs	${file13} -labels "working5/$(basename "$file13" .fasta).txt" -notmatched "${SF}/$(basename "$file13" .fasta).fasta"
+usearch8 -fastx_getseqs	${file13} -labels "working5/$(basename "$file13" .fasta).txt" -notmatched "${SF}/$(basename "$file13" .fasta).fasta"
 		
 		echo ""
 		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	done
 	
-#rm -r working3
-#rm -r working4
-#rm -r working5
+rm -r working3
+rm -r working4
+rm -r working5
 
 		echo ""
 		echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -285,6 +298,8 @@ for file13 in ${QF}/*.fasta
 		echo ""
 		echo Concatenating QF-SF data together
 		echo""
+
+mkdir ${OTUs}
 
 cat ${SF}/*.fasta > ${OTUs}/all_samples_QF_no_singletons.fasta
 
@@ -306,12 +321,12 @@ usearch8 -cluster_otus ${OTUs}/derep_sortbysize.fasta -otus ${OTUs}/otu_rep_seqs
 		echo ""
 		echo Detecting and removing chimeric OTUs
 
-usearch8 -uchime_ref ${OTUs}/otu_rep_seqs.fasta -db drive5/gold.fa -strand plus -nonchimeras ${OTUs}/otu_rep_seqs_chimeras_filtered.fasta
-
+#usearch8 -uchime_ref ${OTUs}/otu_rep_seqs.fasta -db gold.fa -strand plus -nonchimeras ${OTUs}/otu_rep_seqs_chimeras_filtered.fasta
+#
 		echo ""
 		echo Numbering OTUs
 
-python drive5/fasta_number.py ${OTUs}/otu_rep_seqs_chimeras_filtered.fasta OTU_ > ${OTUs}/final_otus.fasta
+python fasta_number.py ${OTUs}/otu_rep_seqs.fasta OTU_ > ${OTUs}/final_otus.fasta
 
 		echo ""
 		echo Creating OTU map
@@ -322,10 +337,9 @@ usearch8 -usearch_global ${OTUs}/all_samples_QF_no_singletons.fasta -db ${OTUs}/
 		echo Creating final OTU table
 		echo""
 
-python drive5/uc2otutab.py ${OTUs}/final_otus_uc_map.txt > ${OTUs}/otu_table.txt
+python uc2otutab.py ${OTUs}/final_otus_uc_map.txt > ${OTUs}/otu_table.txt
 
 
 		echo ""
 		echo Complete
 		echo Script written by Alexander W. Gofton, 2017
-	
