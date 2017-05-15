@@ -67,8 +67,11 @@ maxsize="1"
 # Enter directory for SF-derep data
 SF_derep="SF_derep"
 
-# Enter directory for UNOISE data
+# Enter directory for UNOISE per sample data - does not generate OTU table
 UNOISE_out="UNOISE"
+
+# Enter directory for UNOISE on cat data
+UNOISE_all="UNOISE_all"
 
 
 ##########################################################################################
@@ -316,11 +319,12 @@ rm -r working4
 rm -r working5
 
 		echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		echo Dereplicating SF files
+		echo UNOISE per sample
 		echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mkdir ${SF_derep}
-		
+
+# Step 1 deplicating SF files
 for file14 in ${SF}/*.fasta
 do
 		echo ""
@@ -332,11 +336,9 @@ usearch8 -derep_fulllength ${file14} -fastaout "${SF_derep}/$(basename "$file14"
 
 done
 
-		echo %%%%%%%%%%%%%%%%%%%%%%%%
-		echo UNOISE
-		echo %%%%%%%%%%%%%%%%%%%%%%%%
-
 mkdir ${UNOISE_out}
+
+# Step 2 UNOISE per sample
 
 for file15 in ${SF_derep}/*.fasta
 do
@@ -348,8 +350,21 @@ usearch9 -unoise2 ${file15} -fastaout "${UNOISE_out}/$(basename "$file15" .fasta
 		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 done
 
+#######################################
 
+		echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		echo UNOISE on cat data
+		echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+mkir ${UNOISE_all}
+
+cat ${SF}/*.fasta > "${UNOISE_all}/all_samples_SF.fasta"
+
+usearch9 -derep_fulllength ${UNOISE_all}/all_samples_SF.fasta -fastaout ${UNOISE_all}/all_samples_SF_DR.fasta -sizeout
+
+usearch9 -unoise2 ${UNOISE_all}/all_samples_SF_DR.fasta -fastaout ${UNOISE_all}/all_samples_SF_DR_UNOISE.fasta -tabbedout ${UNOISE_all}/all_samples_SF_DR_UN_tabbed.txt
+
+usearch9 -usearch_global ${UNOISE_all}/all_samples_SF.fasta -db ${UNOISE_all}/all_samples_SF_DR_UNOISE.fasta -strand both -id 1 -otutabout ${UNOISE_all}/unoise_all_otu_tab.txt
 
 
 #		echo ""
