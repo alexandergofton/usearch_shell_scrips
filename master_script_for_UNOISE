@@ -1,9 +1,12 @@
 #!/bin/bash
-
-
-# 	This is a master workflow that will perform:
+#
+#	Requirements: usearch v8.1 & usearch v9.2 - both must be installed on the PATH
+#	This script will work in unix and linux environments.
+#
+#	This script taked raw MiSeq demultiplexed .fastq files for input and performs the followinf tasks:
+#
 #	1) Merging of illumina paired reads
-#	2) Quality filtering of sequence data
+#	2) Quality filtering of sequence data and removal of short dimer seqs
 #	3) Trimming of primer sequences and distal bases and removal of sequences without 100% correct primer sequences
 #	4) Renaming files with USEARCH labels "barcodelabel=sample_id;sequence_id"
 #	5) Removing singletons
