@@ -16,6 +16,11 @@
 #	and "sample_id_SXXX_L001_R2_001.fastq" and all deposited in a directory specified
 #	by the $"raw_data" variable. "SXXX" is the sample number given by the sequencer
 #	in the order you entered them in the Sample Sheet.
+#
+#	Before use: $chmod 775 this_script.sh
+#	To run: $./this_script.sh
+#	This script will read any input directory specified by the "raw_data" variable, but will deposit all
+#	output into the current working diretory.
 ##########################################################################################
 
 # Enter raw data directorry
