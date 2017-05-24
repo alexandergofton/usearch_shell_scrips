@@ -7,14 +7,14 @@
 #
 #	1) Merging of illumina paired reads
 #	2) Quality filtering of sequence data and removal of short dimer seqs
-#	3) Trimming of primer sequences and distal bases and removal of sequences without 100% correct primer sequences
+#	3) Trimming of primer sequences and distal bases and removal of sequences without correct primer sequences
 #	4) Renaming files with USEARCH labels "barcodelabel=sample_id;sequence_id"
-#	5) Removing singletons
-#	6) OTU clusting and chimera detection with UNOISE
+#	5) Removing low abundant sequences
+#	6) OTU clusting and chimera detection with UNOISE2
 ##########################################################################################
-#	Input raw unmerged filenames must be "sample_id_SXXX_L001_R1_001.fastq"
-#	and "sample_id_SXXX_L001_R2_001.fastq" and all deposited in a directory specified
-#	by the $"raw_data" variable. "SXXX" is the sample number given by the sequencer
+#	Input raw unmerged filenames must be named "sample_id_SXXX_L001_R1_001.fastq" (read 1)
+#	and "sample_id_SXXX_L001_R2_001.fastq" (read 2) and all deposited in a directory specified
+#	by the "$raw_data" variable. "SXXX" is the sample number given by the MiSeq
 #	in the order you entered them in the Sample Sheet.
 #
 #	Before use: $chmod 775 this_script.sh
