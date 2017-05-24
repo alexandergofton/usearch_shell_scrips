@@ -15,7 +15,7 @@ mkdir working2
 
 for file1 in input/*.fastq
 	do
-sed -e 's/@/@barcodelabel=;/g' ${file1} > working1/$(basename "$file1" .fastq).txt 
+sed -e "s/@M/@barcodelabel=;M/g" ${file1} > working1/$(basename "$file1" .fastq).txt 
 	done
 
 #####################################################
@@ -24,7 +24,7 @@ sed -e 's/@/@barcodelabel=;/g' ${file1} > working1/$(basename "$file1" .fastq).t
 
 for file2 in working1/*.txt
 	do
-sed -e 's/+/+barcodelabel=;/g' ${file2} > working2/$(basename "$file2") 
+sed -e "s/+M/+barcodelabel=;M/g" ${file2} > working2/$(basename "$file2") 
 	done
 
 #######################################################################################
