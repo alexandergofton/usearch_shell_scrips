@@ -112,7 +112,7 @@ for file1 in ${raw_data}/*R1_001.fastq
 		echo reverse reads are:
 		echo $(basename ${file1} R1_001.fastq)R2_001.fastq
 	
-	./usearch8 -fastq_mergepairs ${file1} -reverse "${raw_data}/$(basename -s R1_001.fastq ${file1})R2_001.fastq" -fastqout "working1/$(basename "$file1")" -fastq_minovlen ${overlap}
+	usearch8 -fastq_mergepairs ${file1} -reverse "${raw_data}/$(basename -s R1_001.fastq ${file1})R2_001.fastq" -fastqout "working1/$(basename "$file1")" -fastq_minovlen ${overlap}
 done
 
 #*****************************************************************************************
@@ -149,7 +149,7 @@ for file3 in ${merged_data}/*.fastq
 		echo input is:
 		echo ${file3}		
 
-	./usearch8 -fastq_filter ${file3} -fastaout "${QF}/$(basename "$file3" .fastq)_QF.fasta" -fastq_maxee_rate ${error_rate} -fastq_minlen 200	
+	usearch8 -fastq_filter ${file3} -fastaout "${QF}/$(basename "$file3" .fastq)_QF.fasta" -fastq_maxee_rate ${error_rate} -fastq_minlen 200	
 done
 #*****************************************************************************************
 
@@ -201,7 +201,7 @@ for file4 in ${QF}/*.fasta
 		echo input is:
 		echo ${file4}
 
-	./usearch8 -search_oligodb ${file4} -db fwd_primer_db.fasta -strand both -matched "seqs_w_fwd_primer/$(basename ${file4})" -notmatched "seqs_wo_fwd_primer/$(basename ${file4})" 	
+	usearch8 -search_oligodb ${file4} -db fwd_primer_db.fasta -strand both -matched "seqs_w_fwd_primer/$(basename ${file4})" -notmatched "seqs_wo_fwd_primer/$(basename ${file4})" 	
 done
 #*****************************************************************************************
 # Step 2: Finding seqs with FWD and REV primers
@@ -215,7 +215,7 @@ for file5 in seqs_w_fwd_primer/*.fasta
 		echo input is:
 		echo ${file5}
 
-	./usearch8 -search_oligodb ${file5} -db rev_primer_db.fasta -strand both -matched "seqs_w_fwd_and_rev_primer/$(basename ${file5})" -notmatched "seqs_w_fwd_butnot_rev_primer/$(basename ${file5})"	
+	usearch8 -search_oligodb ${file5} -db rev_primer_db.fasta -strand both -matched "seqs_w_fwd_and_rev_primer/$(basename ${file5})" -notmatched "seqs_w_fwd_butnot_rev_primer/$(basename ${file5})"	
 done
 #*****************************************************************************************	
 # Step 3: Trimming FWD and REV primers	
@@ -229,7 +229,7 @@ for file6 in seqs_w_fwd_and_rev_primer/*.fasta
 		echo input is:
 		echo ${file6}
 	
-	./usearch8 -search_pcr ${file6} -db both_primers_db.fasta -strand both -maxdiffs ${pcr_missmatches} -pcr_strip_primers -ampout "${trimmed_data}/$(basename ${file6} .fasta).fasta"
+	usearch8 -search_pcr ${file6} -db both_primers_db.fasta -strand both -maxdiffs ${pcr_missmatches} -pcr_strip_primers -ampout "${trimmed_data}/$(basename ${file6} .fasta).fasta"
 done
 #*****************************************************************************************
 # Removing working directories
@@ -306,7 +306,7 @@ for file9 in ${labeled_data}/*.fasta
 		echo input is:
 		echo ${file9}
 	
-	./usearch8 -derep_fulllength ${file9} -fastaout "${derep_dir}/$(basename "$file9" .fasta)_DR.fasta" -sizeout
+	usearch8 -derep_fulllength ${file9} -fastaout "${derep_dir}/$(basename "$file9" .fasta)_DR.fasta" -sizeout
 done
 #*****************************************************************************************	
 # Step 2: Filtering low abundant seqs {maxsize}
@@ -320,7 +320,7 @@ for file10 in ${derep_dir}/*.fasta
 		echo input is:
 		echo ${file10}
 		
-	./usearch8 -sortbysize ${file10} -fastaout "${low_abund_seqs}/$(basename "$file10" .fasta).fasta" -maxsize ${maxsize}
+	usearch8 -sortbysize ${file10} -fastaout "${low_abund_seqs}/$(basename "$file10" .fasta).fasta" -maxsize ${maxsize}
 done
 #*****************************************************************************************	
 # Step 3: Mapping reads
@@ -334,7 +334,7 @@ for file11 in ${labeled_data}/*.fasta
 		echo input is:
 		echo ${file11}
 		
-	./usearch8 -search_exact ${file11} -db "${low_abund_seqs}/$(basename "$file11" .fasta)_DR.fasta" -strand plus -notmatched "${SF}/$(basename "$file11" .fasta)_SF.fasta"
+	usearch8 -search_exact ${file11} -db "${low_abund_seqs}/$(basename "$file11" .fasta)_DR.fasta" -strand plus -notmatched "${SF}/$(basename "$file11" .fasta)_SF.fasta"
 done	
 #*****************************************************************************************
 
@@ -354,7 +354,7 @@ for file15 in ${SF}/*.fasta
 		echo input is:
 		echo ${file15}
 
-	./usearch8 -derep_fulllength ${file15} -fastaout "${SF_derep}/$(basename "$file15" .fasta)_DR.fasta" -sizeout
+	usearch8 -derep_fulllength ${file15} -fastaout "${SF_derep}/$(basename "$file15" .fasta)_DR.fasta" -sizeout
 done
 #*****************************************************************************************
 
@@ -376,7 +376,7 @@ for file16 in ${SF_derep}/*.fasta
 		echo input is:
 		echo ${file15}
 
-	./usearch9.2 -unoise2 ${file16} -fastaout "unoise_per_sample/$(basename "$file16" .fasta)_UN.fasta"
+    usearch9.2 -unoise2 ${file16} -fastaout "unoise_per_sample/$(basename "$file16" .fasta)_UN.fasta"
 done
 #*****************************************************************************************
 
@@ -393,11 +393,11 @@ cat ${SF}/*.fasta > uparse_all/all_samples_SF.fasta
 
 cd uparse_all
 
-./usearch8 -derep_fulllength all_samples_SF.fasta -fastaout all_samples_SF_DR.fasta -sizeout
+usearch8 -derep_fulllength all_samples_SF.fasta -fastaout all_samples_SF_DR.fasta -sizeout
 
-./usearch9.2 -cluster_otus all_samples_SF_DR.fasta -outs uparse_otus.fasta -relabel OTU
+usearch9.2 -cluster_otus all_samples_SF_DR.fasta -outs uparse_otus.fasta -relabel OTU
 
-./usearch9 -usearch_global all_samples_SF.fasta -db uparse_otus.fasta -strand both -id 0.97 -otutabout uparse_otu_tab.txt -biomout uparse_otu_biom.biom
+usearch9 -usearch_global all_samples_SF.fasta -db uparse_otus.fasta -strand both -id 0.97 -otutabout uparse_otu_tab.txt -biomout uparse_otu_biom.biom
 
 cd ..
 
