@@ -361,33 +361,11 @@ done
 ##########################################################################################		
 ##########################################################################################
 
-echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-echo UNOISE per sample
-echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-		mkdir unoise_per_sample
-
-#*****************************************************************************************
-for file16 in ${SF_derep}/*.fasta
-	do
-		echo ""
-		echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		echo Unoise per sample
-		echo input is:
-		echo ${file15}
-
-    usearch9.2 -unoise2 ${file16} -fastaout "unoise_per_sample/$(basename "$file16" .fasta)_UN.fasta"
-done
-#*****************************************************************************************
-
-##########################################################################################		
-##########################################################################################
-
 		echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		echo UPARSE on all
 		echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
-		mkdir uparse_all
+mkdir uparse_all
 
 cat ${SF}/*.fasta > uparse_all/all_samples_SF.fasta
 
@@ -395,7 +373,7 @@ cd uparse_all
 
 usearch8 -derep_fulllength all_samples_SF.fasta -fastaout all_samples_SF_DR.fasta -sizeout
 
-usearch9.2 -cluster_otus all_samples_SF_DR.fasta -outs uparse_otus.fasta -relabel OTU
+usearch9.2 -cluster_otus all_samples_SF_DR.fasta -otus uparse_otus.fasta -relabel OTU
 
 usearch9 -usearch_global all_samples_SF.fasta -db uparse_otus.fasta -strand both -id 0.97 -otutabout uparse_otu_tab.txt -biomout uparse_otu_biom.biom
 
