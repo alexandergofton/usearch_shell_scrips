@@ -1,6 +1,5 @@
 
-
-cd 
+cd  /
 
 vi .bash_profile
 
@@ -8,7 +7,7 @@ vi .bash_profile
 
 #then add
 
-export PATH="/User/[username]/Desktop/usearch9:$PATH
+export PATH="/Users/[username]/Desktop/usearch9":$PATH
 
 #above just enter the path to the folder containing usearch9, followed by :$PATH
 
