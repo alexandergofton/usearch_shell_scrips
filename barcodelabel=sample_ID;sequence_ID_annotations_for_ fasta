@@ -1,10 +1,14 @@
 #!/bin/bash
 
-# For this script to run correctly input fasta label must be formatted >sequence_id, and filename must be sample_id.fasta.
-# Result will be ">barcodelabel=sample_id;sequenceid"
+# This script will rename sequences with ">barcodelabel=sample_id;sequence:id", as required by USEARCH otu clustering methods.
+# For this script to run correctly input fasta label must be formatted ">sequence_id", and filename must be "sample_id.fasta".
+# THIS ONLY WORKS FOR .fasta FILES, NOT .fastq FILES.
 
 input_fasta="input"
 ouput_labeled_fasta="output"
+
+########################################################################################################
+########################################################################################################
 
 mkdir ${ouput_labeled_fasta}
 mkdir working1
