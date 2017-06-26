@@ -1,6 +1,8 @@
 #!/bin/bash
 #
-#	Requirements:usearch v9.2 must be installed on the PATH
+#	Requirements: usearch v9.2 and usearch8 must be installed on the PATH as "usearch9.2" and "usearch8" - it does not matter whether
+#	you have the 32-bit of 64-bit version.
+#
 #	This script will work in unix and linux environments.
 #
 #	This script taked raw MiSeq demultiplexed .fastq files for input and performs the followinf tasks:
@@ -24,67 +26,51 @@
 ##########################################################################################
 
 # Enter raw data directorry
-
 raw_data="raw_data"
 
 # Enter directory for merged output
-
 merged_data="merged_seqs"
 
 # Enter minimum merge overlap - 50 bp minimum
-
 overlap="10"
 
 # Enter directory for quality filtered output
-
 QF="QF_0.01"
 
 # Enter % expected error rate threchold for seq quality filtering (1% = 0.01)
-
 error_rate="0.01"
 
 # Enter min length of sequence for trimming in bp (eg. to keep all seqs above 200 bp enter "200")
-
 minlen="150"
 
 # Enter directory for trimmed data
-
 trimmed_data="QF_trimmed"
 
 # Enter FWD primer sequence 5'-3' (degenerate bases OK)
-
 fwd_primer="GTGCCAGCMGCCGCGGTAA"
 
 # Enter REV primer sequence 5'-3' (degenerate bases OK)
-
 rev_primer="GGACTACHVGGGTWTCTAAT"
 
 # Enter number of primer missmatches allowed
-
 pcr_missmatches="0"
 
 # Enter directory for labeled data
-
 labeled_data="QF_trimmed_labeled"
 
 # Enter directory for derep seq (unique seqs)
-
 derep_dir="derep_dir"
 
 # Enter directory for singleton filtered data
-
 SF="SF4"
 
 # Enter max replicate cluster size (eg. to remove singletons enter 1, for duplicates enter 2)
-
 maxsize="4"
 
 # Enter directory for SF-derep data
-
 SF_derep="SF4_derep"
 
 # Enter directory for singleton seqs
-
 low_abund_seqs="low_abund_seqs"
 
 ##########################################################################################
