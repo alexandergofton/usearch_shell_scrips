@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#	Requirements: usearch v9.2 and usearch8 must be installed on the PATH as "usearch9.2" and "usearch8" - it does not matter whether
+#	Requirements: usearch9.2, usearch10 and usearch8 must be installed on the PATH as "usearch9.2" "usearch10" and "usearch8" - it does not matter whether
 #	you have the 32-bit of 64-bit version.
 #	This script will work in unix and linux environments.
 #
@@ -134,7 +134,7 @@ for file3 in ${merged_data}/*.fastq
 		echo input is:
 		echo ${file3}
 
-	usearch9.2 -fastq_filter ${file3} -fastaout "${QF}/$(basename "$file3" .fastq)_QF.fasta" -fastq_maxee_rate ${error_rate} -fastq_minlen 200
+	usearch9.2 -fastq_filter ${file3} -fastaout "${QF}/$(basename "$file3" .fastq)_QF.fasta" -fastq_maxee_rate ${error_rate} -fastq_minlen ${minlen}
 done
 #*****************************************************************************************
 
@@ -269,7 +269,7 @@ done
 
 
 echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-echo Removing low abundant seqs per sample
+echo Removing low abundant seqs (singletons) per sample
 echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 echo ""
 
@@ -358,9 +358,9 @@ cd unoise_all
 
 usearch9.2 -fastx_uniques all_samples_SF.fasta -fastaout all_samples_SF_DR.fasta -sizeout
 
-usearch9.2 -unoise2 all_samples_SF_DR.fasta -fastaout unoise.fasta
+usearch10 -unoise3 all_samples_SF_DR.fasta -fastaout unoise.fasta -tabbedout unoise_tab.txt 
 
-usearch9.2 -usearch_global all_samples_SF.fasta -db unoise.fasta -strand both -id 1 -otutabout unoise_otu_tab.txt -biomout unoise_otu_biom.biom
+usearch10 -otutab all_samples_SF.fasta -zotus unoise.fasta -strand both -id 1 -otutabout unoise_otu_tab.txt -biomout unoise_otu_biom.biom -strand both -mapout unoise_map.txt -notmatched unoise_notmatched.fasta -dbmatched dbmatches.fasta -sizeout
 
 cd ..
 
