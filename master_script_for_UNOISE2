@@ -360,7 +360,7 @@ usearch9.2 -fastx_uniques all_samples_SF.fasta -fastaout all_samples_SF_DR.fasta
 
 usearch10 -unoise3 all_samples_SF_DR.fasta -fastaout unoise.fasta -tabbedout unoise_tab.txt 
 
-usearch10 -otutab all_samples_SF.fasta -zotus unoise.fasta -strand both -id 1 -otutabout unoise_otu_tab.txt -biomout unoise_otu_biom.biom -strand both -mapout unoise_map.txt -notmatched unoise_notmatched.fasta -dbmatched dbmatches.fasta -sizeout
+usearch10 -otutab all_samples_SF.fasta -zotus unoise.fasta -strand both -otutabout unoise_otu_tab.txt -biomout unoise_otu_biom.biom -mapout unoise_map.txt -notmatched unoise_notmatched.fasta -dbmatched dbmatches.fasta -sizeout
 
 cd ..
 
