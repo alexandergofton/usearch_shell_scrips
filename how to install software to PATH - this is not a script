@@ -1,0 +1,29 @@
+
+#installing software on the computer PATH
+
+#First navigate to your $HOME directory
+
+cd ~
+
+#Now on mac/linux we need to edit the .bash_profile or .bashrc file to let the
+#   computer know where to find the software
+
+vi .bash_profile
+
+#Then add the following line the the file
+
+export PATH=/Users/alexandergofton/Documents/SOFTWARE:$PATH
+
+#Then save and close .bash_profile
+
+:wq!
+
+#Check that the save worked correctly
+
+cat .bash_profile
+
+#Restart terminal, and check it has worked by entering
+
+echo $PATH
+
+#It should return the line above that you entered
