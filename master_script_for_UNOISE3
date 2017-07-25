@@ -2,6 +2,7 @@
 #
 #	Requirements: usearch9.2, usearch10 and usearch8 must be installed on the PATH as "usearch9.2" "usearch10" and "usearch8" - it does not matter whether
 #	you have the 32-bit of 64-bit version.
+#	I have a 64 bit version of usearch9.2, so I use that for steps that need higher RAM requiremnets.
 #	This script will work in unix and linux environments.
 #
 #	This script taked raw MiSeq demultiplexed .fastq files for input and performs the following tasks:
@@ -11,7 +12,7 @@
 #	3) Trimming of primer sequences and distal bases and removal of sequences without correct primer sequences
 #	4) Renaming files with USEARCH labels "barcodelabel=sample_id;sequence_id"
 #	5) Removing low abundant sequences
-#	6) OTU clusting and chimera detection with UNOISE2
+#	6) OTU clusting and chimera detection with UNOISE3
 ##########################################################################################
 #	Input raw unmerged filenames must be named "sample_id_SXXX_L001_R1_001.fastq" (read 1)
 #	and "sample_id_SXXX_L001_R2_001.fastq" (read 2) and all deposited in a directory specified
@@ -26,49 +27,34 @@
 
 # Enter raw data directorry
 raw_data="raw_data"
-
 # Enter directory for merged output
 merged_data="merged_seqs"
-
 # Enter minimum merge overlap - 50 bp minimum
 overlap="10"
-
 # Enter directory for quality filtered output
 QF="QF=0.01"
-
 # Enter % expected error rate threchold for seq quality filtering (1% = 0.01)
 error_rate="0.01"
-
 # Enter min length of sequence for trimming in bp (eg. to keep all seqs above 200 bp enter "200")
 minlen="150"
-
 # Enter directory for trimmed data
 trimmed_data="QF_trimmed"
-
 # Enter FWD primer sequence 5'-3' (degenerate bases OK)
 fwd_primer="AGAGTTTGATCCTGGCTYAG"
-
 # Enter REV primer sequence 5'-3' (degenerate bases OK)
 rev_primer="TGCTGCCTCCCGTAGGAGT"
-
 # Enter number of primer missmatches allowed
-
 pcr_missmatches="0"
 # Enter directory for labeled data
-
 labeled_data="QF_trimmed_labeled"
 # Enter directory for derep seq (unique seqs)
-
 derep_dir="derep_dir"
 # Enter directory for singleton filtered data
-
 SF="SF=1"
 # Enter max replicate cluster size (eg. to remove singletons enter 1, for duplicates enter 2)
-
 maxsize="1"
 # Enter directory for SF-derep data
 SF_derep="SF=1_derep"
-
 # Enter directory for singleton seqs
 low_abund_seqs="low_abund_seqs"
 
