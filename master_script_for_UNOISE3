@@ -255,7 +255,7 @@ done
 
 
 echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-echo Removing low abundant seqs (singletons) per sample
+echo Removing low abundant seqs singletons per sample
 echo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 echo ""
 
@@ -344,7 +344,7 @@ cd unoise_all
 
 usearch9.2 -fastx_uniques all_samples_SF.fasta -fastaout all_samples_SF_DR.fasta -sizeout
 
-usearch10 -unoise3 all_samples_SF_DR.fasta -fastaout unoise.fasta -tabbedout unoise_tab.txt 
+usearch10 -unoise3 all_samples_SF_DR.fasta -zotus unoise.fasta -tabbedout unoise_tab.txt 
 
 usearch10 -otutab all_samples_SF.fasta -zotus unoise.fasta -strand both -otutabout unoise_otu_tab.txt -biomout unoise_otu_biom.biom -mapout unoise_map.txt -notmatched unoise_notmatched.fasta -dbmatched dbmatches.fasta -sizeout
 
